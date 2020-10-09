@@ -18,7 +18,6 @@ section '.data' data readable writable
         vec_last_negative dd 200
         vec_size     dd 0
         vec_size_b   dd 0
-        sum          dd 0
         i            dd ?
         tmp          dd ?
         vec          rd 100
