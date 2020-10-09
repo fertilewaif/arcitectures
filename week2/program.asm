@@ -1,4 +1,4 @@
-;Корнилов Георгий, группа бпи-197 вариант 12
+;Kornilov Georgiy, variant 12, gruppa 197
 format PE console
 entry start
 
@@ -60,12 +60,11 @@ VectorInput:
         mov eax, [vec_size]
         cmp eax, 0
         jg  getVector
-        cmp eax, 100
-        jle getVector
 ; wrong size (less than zero or greater than 100)
-        push vec_size
+        push [vec_size]
         push strIncorSize
         call [printf]
+        call [getch]
         push 0
         call [ExitProcess]
 ; else continue inputting vector
