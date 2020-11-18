@@ -14,10 +14,10 @@ int max_i = -1, max_j;
 long long max_sum;
 
 void func(int startIndex) {
-	int max_index = startIndex + 1;
+    int max_index = startIndex + 1;
 
-	arr_mutex.lock();
-	const int temp_size = arr_size;
+    arr_mutex.lock();
+    const int temp_size = arr_size;
     arr_mutex.unlock();
 
     arr_mutex.lock();
@@ -26,7 +26,7 @@ void func(int startIndex) {
     long long cur_max_sum = cur_sum;
 
     for (auto offset = 2; startIndex + offset < temp_size; offset++) {
-	    arr_mutex.lock();
+        arr_mutex.lock();
         int elem = arr[startIndex + offset];
         arr_mutex.unlock();
         if (offset % 2 == 0) {
@@ -56,10 +56,10 @@ int main(int argc, char **argv) {
         std::cout << "Wrong usage: main.exe <input_path>" << std::endl;
     }
 	
-	char *file_name = argv[1];
+    char *file_name = argv[1];
     std::ifstream input(file_name);
     if (!input.is_open()) {
-	    std::cout << "wrong file" << std::endl;
+        std::cout << "wrong file" << std::endl;
         return 1;
     }
     input >> arr_size;
@@ -69,24 +69,24 @@ int main(int argc, char **argv) {
         return 1;
     }
 	
-	arr = new int[arr_size];
+    arr = new int[arr_size];
 	
     try {
         for (size_t i = 0; i < arr_size; i++) {
             input >> arr[i];
         }
     }
-	catch (...)
-	{
+    catch (...)
+    {
         std::cout << "wrong content of file" << std::endl;
         input.close();
         return 1;
-	}
+    }
     input.close();
 
     std::cout << arr_size << std::endl;
     for (size_t i = 0; i < arr_size; i++) {
-	    std::cout << arr[i] << " ";
+        std::cout << arr[i] << " ";
     }
     std::cout << std::endl;
 
@@ -109,5 +109,5 @@ int main(int argc, char **argv) {
 
     delete[] arr;
     delete[] threads;
-	return 0;
+    return 0;
 }
