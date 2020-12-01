@@ -81,8 +81,7 @@ int main(int argc, char **argv) {
             }
         }
 
-        int thread_num = omp_get_thread_num();
-        std::cout << "Thread #" << thread_num << " with beginning index " << i << " has finished working with ending index " << max_index << " and sum " << cur_max_sum << std::endl;  
+        std::cout << "Thread with beginning index " << i << " has finished working with ending index " << max_index << " and sum " << cur_max_sum << std::endl;  
     }
 
     clock_t endTime = clock();
