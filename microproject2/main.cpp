@@ -36,7 +36,9 @@ int main()
 
 	for (int i = 0; i < buyers_amount; i++)
 	{
-		std::mt19937 randomizer;
+		auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+		std::mt19937 randomizer(seed);
+		
 		std::uniform_int_distribution<int> range(1, max_purchases);
 		int len = range(randomizer);
 		
@@ -48,6 +50,14 @@ int main()
 			buyings_order[i] = range(randomizer);
 			sellers_order.push(sellers[buyings_order[i] - 1]);
 		}
+
+		std::cout << "Buyer #" << i + 1 << " goes in following order: ";
+		for (auto seller_number : buyings_order)
+		{
+			std::cout << seller_number << " ";
+		}
+		std::cout << std::endl;
+		
 		auto new_buyer = new buyer(i + 1, &cout_mutex, sellers_order);
 		buyers[i] = new_buyer;
 		buyers_threads[i] = std::thread(&buyer::run, new_buyer);

@@ -10,8 +10,7 @@ seller::seller()
 	number = -1;
 	current_buyers = std::queue<std::pair<buyer*, std::mutex*>>();
 
-	std::random_device device;
-	randomizer.seed(device());
+	randomizer.seed(time(0));
 }
 
 seller::seller(int number, std::mutex* out_mutex) : number(number), cout_mutex(out_mutex)
@@ -74,9 +73,9 @@ void seller::process_buyer(buyer* cur_buyer, std::mutex* cur_mutex)
 		<< std::endl;
 	cout_mutex->unlock();
 	
-	// std::uniform_int_distribution<int> range(1, 3);
-	// int seconds = range(randomizer);
-	// std::this_thread::sleep_for(std::chrono::milliseconds(1000 * seconds));
+	 std::uniform_int_distribution<int> range(500, 1500);
+	 int milliseconds = range(randomizer);
+	 std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 	cur_mutex->unlock();
 }
 
