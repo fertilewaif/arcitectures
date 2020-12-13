@@ -46,12 +46,15 @@ void buyer::run()
 		seller* current_seller = sellers_order.front();
 
 		cout_mutex->lock();
-		std::cout << "Buyer #" << getNumber() << " goes to shop#" << current_seller->getNumber() << std::endl;
+		std::cout << "Buyer #" << getNumber() << " goes to shop #" << current_seller->getNumber() << std::endl;
 		cout_mutex->unlock();
 
 		std::mutex cur_mutex;
 		sellers_order.pop();
 		current_seller->add_buyer(this, &cur_mutex);
+
+		cur_mutex.lock();
+		cur_mutex.unlock();
 	}
 }
 

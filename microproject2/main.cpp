@@ -6,7 +6,7 @@
 #include "seller.h"
 #include <random>
 
-const int max_purchases = 10;
+const int max_purchases = 2;
 const int sellers_amount = 3;
 
 int main()
@@ -49,18 +49,22 @@ int main()
 			sellers_order.push(sellers[buyings_order[i] - 1]);
 		}
 		auto new_buyer = new buyer(i + 1, &cout_mutex, sellers_order);
-		buyers.emplace_back(new_buyer);
-		buyers_threads.emplace_back(std::thread(&buyer::run, new_buyer));
+		buyers[i] = new_buyer;
+		buyers_threads[i] = std::thread(&buyer::run, new_buyer);
 	}
 
 	for (int i = 0; i < buyers_amount; i++)
 	{
-		buyers_threads[i].join();
+		if (buyers_threads[i].joinable()) {
+			buyers_threads[i].join();
+		}
 	}
 	for (int i = 0; i < sellers_amount; i++)
 	{
 		sellers[i]->cancel();
-		sellers_threads[i].join();
+		if (sellers_threads[i].joinable()) {
+			sellers_threads[i].join();
+		}
 	}
 
 	for (int i = 0; i < buyers_amount; i++)

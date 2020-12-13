@@ -44,7 +44,6 @@ void seller::add_buyer(buyer* new_buyer, std::mutex* new_mutex)
 	queue_mutex.lock();
 	new_mutex->lock();
 	current_buyers.push({ new_buyer, new_mutex });
-	queue_mutex.unlock();
 }
 
 int seller::getNumber()
@@ -66,7 +65,7 @@ void seller::process_buyer(buyer* cur_buyer, std::mutex* cur_mutex)
 	cout_mutex->lock();
 	std::cout << "Seller #" << getNumber()
 		<< " processes client #"
-		<< current_buyers.front().first->getNumber()
+		<< cur_buyer->getNumber()
 		<< std::endl
 		<< "Current condition"
 		<< std::endl
@@ -84,7 +83,7 @@ std::string seller::to_string()
 {
 	std::string res = "---\n";
 	res += '|' + std::to_string(getNumber()) + "|\n";
-	res += "---\n";
+	res += "-/-\n";
 	std::vector<int> visitorsNumbers = queueToVector(current_buyers);
 	for (auto visitorNumber : visitorsNumbers)
 	{
@@ -95,7 +94,7 @@ std::string seller::to_string()
 
 std::vector<int> seller::queueToVector(std::queue<std::pair<buyer*, std::mutex*>> q)
 {
-	std::vector<int> res(q.size());
+	std::vector<int> res;
 	while (!q.empty())
 	{
 		res.emplace_back(q.front().first->getNumber());
@@ -114,9 +113,8 @@ void seller::run()
 		}
 
 		auto cur_pair = current_buyers.front();
-		current_buyers.pop();
-
 		process_buyer(cur_pair.first, cur_pair.second);
+		current_buyers.pop();
 	}
 	while (!current_buyers.empty())
 	{
