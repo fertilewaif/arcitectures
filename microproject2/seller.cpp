@@ -10,7 +10,8 @@ seller::seller()
 	number = -1;
 	current_buyers = std::queue<std::pair<buyer*, std::mutex*>>();
 
-	randomizer.seed(time(0));
+	auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+	randomizer.seed(seed);
 }
 
 seller::seller(int number, std::mutex* out_mutex) : number(number), cout_mutex(out_mutex)
