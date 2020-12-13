@@ -1,4 +1,5 @@
 #pragma once
+#include <mutex>
 #include <queue>
 
 class seller;
@@ -6,8 +7,8 @@ class seller;
 class buyer {
 public:
     buyer();
-    explicit buyer(int);
-    buyer(int number, std::queue<seller*>);
+    explicit buyer(int, std::mutex*);
+    buyer(int, std::mutex*, std::queue<seller*>);
     buyer(const buyer& other);
     buyer& operator=(const buyer&);
 
@@ -16,6 +17,8 @@ public:
 private:
     bool waiting = false;
     std::queue<seller*> sellers_order;
+
+    std::mutex* cout_mutex;
 	
     int number;
 };

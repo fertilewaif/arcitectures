@@ -6,7 +6,7 @@
 class seller {
 public:
     seller();
-    explicit seller(int);
+    explicit seller(int, std::mutex*);
     seller(const seller&);
     seller& operator=(const seller&);
 
@@ -27,6 +27,8 @@ private:
 
     std::mutex working_mutex;
     bool working = true;
+
+    std::mutex* cout_mutex;
 
     bool is_working();
 	

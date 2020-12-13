@@ -14,7 +14,7 @@ seller::seller()
 	randomizer.seed(device());
 }
 
-seller::seller(int number) : number(number)
+seller::seller(int number, std::mutex* out_mutex) : number(number), cout_mutex(out_mutex)
 {
 	current_buyers = std::queue<std::pair<buyer*, std::mutex*>>();
 
@@ -27,6 +27,7 @@ seller::seller(const seller& other)
 	number = other.number;
 	current_buyers = other.current_buyers;
 	randomizer = other.randomizer;
+	cout_mutex = other.cout_mutex;
 }
 
 seller& seller::operator=(const seller& other)
@@ -34,6 +35,7 @@ seller& seller::operator=(const seller& other)
 	number = other.number;
 	current_buyers = other.current_buyers;
 	randomizer = other.randomizer;
+	cout_mutex = other.cout_mutex;
 	return *this;
 }
 
@@ -61,6 +63,7 @@ bool seller::is_working()
 
 void seller::process_buyer(buyer* cur_buyer, std::mutex* cur_mutex)
 {
+	cout_mutex->lock();
 	std::cout << "Seller #" << getNumber()
 		<< " processes client #"
 		<< current_buyers.front().first->getNumber()
@@ -69,7 +72,7 @@ void seller::process_buyer(buyer* cur_buyer, std::mutex* cur_mutex)
 		<< std::endl
 		<< to_string()
 		<< std::endl;
-				
+	cout_mutex->unlock();
 	
 	std::uniform_int_distribution<int> range(1, 3);
 	int seconds = range(randomizer);
@@ -79,9 +82,9 @@ void seller::process_buyer(buyer* cur_buyer, std::mutex* cur_mutex)
 
 std::string seller::to_string()
 {
-	std::string res('-', 3);
-	res += '\n';
+	std::string res = "---\n";
 	res += '|' + std::to_string(getNumber()) + "|\n";
+	res += "---\n";
 	std::vector<int> visitorsNumbers = queueToVector(current_buyers);
 	for (auto visitorNumber : visitorsNumbers)
 	{

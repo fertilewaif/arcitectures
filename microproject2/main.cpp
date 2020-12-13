@@ -20,11 +20,13 @@ int main()
 		return 0;
 	}
 
+	std::mutex cout_mutex;
+	
 	std::vector<seller*> sellers(sellers_amount);
 	std::vector<std::thread> sellers_threads(sellers_amount);
 	for (int i = 0; i < sellers_amount; i++)
 	{
-		auto new_seller = new seller(i + 1);
+		auto new_seller = new seller(i + 1, &cout_mutex);
 		sellers[i] = new_seller;
 		sellers_threads[i] = std::thread(&seller::run, new_seller);
 	}
@@ -46,7 +48,7 @@ int main()
 			buyings_order[i] = range(randomizer);
 			sellers_order.push(sellers[buyings_order[i] - 1]);
 		}
-		auto new_buyer = new buyer(i + 1, sellers_order);
+		auto new_buyer = new buyer(i + 1, &cout_mutex, sellers_order);
 		buyers.emplace_back(new_buyer);
 		buyers_threads.emplace_back(std::thread(&buyer::run, new_buyer));
 	}
