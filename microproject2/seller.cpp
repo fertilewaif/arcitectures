@@ -44,6 +44,7 @@ void seller::add_buyer(buyer* new_buyer, std::mutex* new_mutex)
 	queue_mutex.lock();
 	new_mutex->lock();
 	current_buyers.push({ new_buyer, new_mutex });
+	queue_mutex.unlock();
 }
 
 int seller::getNumber()
@@ -73,9 +74,9 @@ void seller::process_buyer(buyer* cur_buyer, std::mutex* cur_mutex)
 		<< std::endl;
 	cout_mutex->unlock();
 	
-	std::uniform_int_distribution<int> range(1, 3);
-	int seconds = range(randomizer);
-	std::this_thread::sleep_for(std::chrono::milliseconds(1000 * seconds));
+	// std::uniform_int_distribution<int> range(1, 3);
+	// int seconds = range(randomizer);
+	// std::this_thread::sleep_for(std::chrono::milliseconds(1000 * seconds));
 	cur_mutex->unlock();
 }
 
@@ -107,14 +108,23 @@ void seller::run()
 {
 	while (is_working())
 	{
-		if (current_buyers.empty())
+		queue_mutex.lock();
+		auto is_empty = current_buyers.empty();
+		queue_mutex.unlock();
+		if (is_empty)
 		{
 			continue;
 		}
 
+		queue_mutex.lock();
 		auto cur_pair = current_buyers.front();
+		queue_mutex.unlock();
+
 		process_buyer(cur_pair.first, cur_pair.second);
+		
+		queue_mutex.lock();
 		current_buyers.pop();
+		queue_mutex.unlock();
 	}
 	while (!current_buyers.empty())
 	{
