@@ -1,6 +1,8 @@
-#include <buyer.h>
+#include "buyer.h"
 #include <iostream>
-#include <seller.h>
+#include <chrono>
+#include <thread>
+#include "seller.h"
 #include <string>
 
 seller::seller()
@@ -48,6 +50,15 @@ int seller::getNumber()
 	return number;
 }
 
+bool seller::is_working()
+{
+	working_mutex.lock();
+	auto res = working;
+	working_mutex.unlock();
+	return res;
+}
+
+
 void seller::process_buyer(buyer* cur_buyer, std::mutex* cur_mutex)
 {
 	std::cout << "Seller #" << getNumber()
@@ -89,5 +100,34 @@ std::vector<int> seller::queueToVector(std::queue<std::pair<buyer*, std::mutex*>
 	}
 	return res;
 }
+
+void seller::run()
+{
+	while (is_working())
+	{
+		if (current_buyers.empty())
+		{
+			continue;
+		}
+
+		auto cur_pair = current_buyers.front();
+		current_buyers.pop();
+
+		process_buyer(cur_pair.first, cur_pair.second);
+	}
+	while (!current_buyers.empty())
+	{
+		current_buyers.front().second->unlock();
+		current_buyers.pop();
+	}
+}
+
+void seller::cancel()
+{
+	working_mutex.lock();
+	working = false;
+	working_mutex.unlock();
+}
+
 
 

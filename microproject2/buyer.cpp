@@ -1,6 +1,7 @@
-#include <buyer.h>
+#include "buyer.h"
 #include <iostream>
-#include <seller.h>
+#include <utility>
+#include "seller.h"
 
 buyer::buyer() : number(-1)
 {
@@ -12,7 +13,7 @@ buyer::buyer(const int number) : number(number)
 	sellers_order = std::queue<seller*>();
 }
 
-buyer::buyer(int number, std::queue<seller*> sellers) : sellers_order(sellers), number(number)
+buyer::buyer(int number, std::queue<seller*> sellers) : sellers_order(std::move(sellers)), number(number)
 {
 
 }
