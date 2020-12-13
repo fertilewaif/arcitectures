@@ -6,16 +6,16 @@ class seller;
 class buyer {
 public:
     buyer();
-    explicit buyer(int number);
-    buyer(int number, std::queue<seller*> sellers);
+    explicit buyer(int);
+    buyer(int number, std::queue<seller*>);
     buyer(const buyer& other);
-    buyer& operator=(const buyer& other);
+    buyer& operator=(const buyer&);
 
     int getNumber();
-	
-    void notify();
     void run();
-private:	
-    bool is_waiting();
-    void set_waiting(bool waiting);
+private:
+    bool waiting = false;
+    std::queue<seller*> sellers_order;
+	
+    int number;
 };
