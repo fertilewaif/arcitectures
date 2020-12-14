@@ -60,7 +60,9 @@ int main()
 		
 		auto new_buyer = new buyer(i + 1, &cout_mutex, sellers_order);
 		buyers[i] = new_buyer;
-		buyers_threads[i] = std::thread(&buyer::run, new_buyer);
+	}
+	for (int i = 0; i < buyers_amount; i++) {
+		buyers_threads[i] = std::thread(&buyer::run, buyers[i]);
 	}
 
 	for (int i = 0; i < buyers_amount; i++)
